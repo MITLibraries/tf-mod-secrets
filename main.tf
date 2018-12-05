@@ -48,13 +48,13 @@ data "aws_iam_policy_document" "write" {
 }
 
 resource "aws_iam_policy" "r_policy" {
-  name        = "${module.label.name}-read"
+  name        = "${module.label.name}-read-secret"
   description = "Read access to a specific AWS secret"
   policy      = "${data.aws_iam_policy_document.read.json}"
 }
 
 resource "aws_iam_policy" "w_policy" {
-  name        = "${module.label.name}-write"
+  name        = "${module.label.name}-write-secret"
   description = "Write access to a specific AWS secret"
   policy      = "${data.aws_iam_policy_document.write.json}"
 }
