@@ -6,16 +6,20 @@
  * through the AWS console or by using the write policy to update it through
  * some other means.
  */
+provider "aws" {
+  version = "~> 2.0"
+  region  = "us-east-1"
+}
 
 module "label" {
-  source = "github.com/mitlibraries/tf-mod-name?ref=0.11"
-  name   = "${var.name}"
-  tags   = "${var.tags}"
+  source = "github.com/MITLibraries/tf-mod-name?ref=0.12"
+  name   = var.name
+  tags   = var.tags
 }
 
 resource "aws_secretsmanager_secret" "default" {
-  name = "${module.label.name}"
-  tags = "${module.label.tags}"
+  name = module.label.name
+  tags = module.label.tags
 }
 
 data "aws_iam_policy_document" "read" {
@@ -26,7 +30,7 @@ data "aws_iam_policy_document" "read" {
     ]
 
     resources = [
-      "${aws_secretsmanager_secret.default.arn}",
+      aws_secretsmanager_secret.default.arn,
     ]
   }
 }
@@ -42,7 +46,7 @@ data "aws_iam_policy_document" "write" {
     ]
 
     resources = [
-      "${aws_secretsmanager_secret.default.arn}",
+      aws_secretsmanager_secret.default.arn,
     ]
   }
 }
@@ -50,11 +54,12 @@ data "aws_iam_policy_document" "write" {
 resource "aws_iam_policy" "r_policy" {
   name        = "${module.label.name}-read-secret"
   description = "Read access to a specific AWS secret"
-  policy      = "${data.aws_iam_policy_document.read.json}"
+  policy      = data.aws_iam_policy_document.read.json
 }
 
 resource "aws_iam_policy" "w_policy" {
   name        = "${module.label.name}-write-secret"
   description = "Write access to a specific AWS secret"
-  policy      = "${data.aws_iam_policy_document.write.json}"
+  policy      = data.aws_iam_policy_document.write.json
 }
+
