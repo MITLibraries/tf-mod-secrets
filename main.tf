@@ -12,7 +12,7 @@ provider "aws" {
 }
 
 module "label" {
-  source = "github.com/MITLibraries/tf-mod-name?ref=0.12"
+  source = "github.com/MITLibraries/tf-mod-name?ref=0.13"
   name   = var.name
   tags   = var.tags
 }
